@@ -1,2 +1,2 @@
-This document describes how to install Pritunl VPN on on-prem Debian 12.
+This document describes how to install Pritunl VPN on on-prem CentOS7.
 
