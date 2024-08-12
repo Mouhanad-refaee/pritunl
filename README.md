@@ -1,0 +1,76 @@
+This document discripe how to install Pritunl VPN on on-prem Debian 12.
+
+ADD THE MONGODB REPO:
+sudo nano /etc/yum.repos.d/mongodb-org-3.4.repo
+
+[mongodb-org-3.4]
+name=MongoDB Repository
+baseurl=https://repo.mongodb.org/yum/redhat/7/mongodb-org/3.4/x86_64/
+gpgcheck=1
+enabled=1
+gpgkey=https://www.mongodb.org/static/pgp/server-3.4.asc
+
+ADD PRITUNL REPO:
+sudo nano /etc/yum.repos.d/pritunl.repo
+
+[pritunl]
+name=Pritunl Repository
+baseurl=https://repo.pritunl.com/stable/yum/centos/7/
+gpgcheck=1
+enabled=1
+
+sudo yum -y install epel-release
+
+DISABLE SELINUX
+sudo nano /etc/selinux/config
+Change the SELINUX=enforcing line to SELINUX=disabled
+Reboot your server, and log back in.
+
+INSTALLING PRITUNL:
+sudo gpg --keyserver hkp://keyserver.ubuntu.com --recv-keys 7568D9BB55FF9E5287D586017AE645C0CF8E292A
+sudo gpg --armor --export 7568D9BB55FF9E5287D586017AE645C0CF8E292A > temp.tmp; sudo rpm --import temp.tmp
+
+IF THE KEYSERVER NOT WORKING USE:
+sudo gpg --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 7568D9BB55FF9E5287D586017AE645C0CF8E292A
+
+REMOVE THE TEMP:
+sudo rm -f temp.tmp
+
+sudo yum -y install pritunl mongodb-org
+
+RUN THE MONGODB AND PRITUNL AT THE START UP:
+sudo systemctl start mongod pritunl
+sudo systemctl enable mongod pritunl
+
+CONFIGURATION:
+sudo pritunl setup-key
+
+THE SERVER VISIT:
+https://the_server_IP
+
+To get the pritunl setup-key use the folloing command.
+
+sudo pritunl setup-key
+
+IF THE EPEL-RELEASE DOES NOT WORK TO INSTALL REFER TO THIS:
+Install EPEL in 3 easy steps
+First, enable the CodeReady Linux Builder repository. You already have access to it; you just need to enable it.
+
+On CentOS Stream:
+
+$ sudo dnf config-manager --set-enabled crb
+On RHEL:
+
+$ sudo subscription-manager repos --enable codeready-builder-for-rhel-9-$(arch)-rpms
+Next, install the EPEL RPM.
+
+On CentOS Stream:
+
+$ sudo dnf install epel-release epel-next-release
+On RHEL:
+
+$ sudo dnf install \
+https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm
+That's it! There isn't actually a third step, so now you can install software from EPEL. For example, here's how to install inxi, a handy command to gather system stats:
+
+$ sudo dnf install inxi
